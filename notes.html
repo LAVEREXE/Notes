@@ -1,0 +1,185 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div id="main-screen">
+        <span id="main-info">Все заметки</span>
+        <span id="notes-count"></span>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="notes-title">
+                        название
+                        <br/>
+                        <span class="note-date">23.02.2024</span>
+                    
+                    </td>
+                    <td>
+                        <i class="material-icons note-del-icon">delete_outlined</i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <i id="add-note-icon" class="material-icons shadow-icon" onclick="addnoteiconclick()">add</i>
+    </div>
+    <div id="edit-screen">
+        <i id="back-icon" class="material-icons " onclick="backiconclick()">arrow_back_ios</i>
+        <input type="text" placeholder="название заметки" onchange="savenote()">
+        <hr/>
+        <textarea onchange="savenote()"></textarea>
+    </div>
+    <style>
+        body {
+            font-family: Arial;
+        }
+        /*MAIN SCREEN*/
+        /*#main-screen {
+            display: none; 
+        }*/
+        table {
+            font-size: xx-large;
+            width: 100%;
+            margin-top: 15%;
+            float: left;
+        }
+        tbody > tr {
+            width: 100%;
+
+        }
+        #main-info, #notes-count {
+            font-size: xx-large;
+            float: left;
+            width: 100%;
+            margin-top: 50%;
+            text-align: center;
+        }
+        #notes-count {
+            margin-top: 2.5%;
+            color: grey;
+            font-size: x-large;
+            font-weight: lighter;
+        }
+        .shadow-icon {
+            border-radius: 50%;
+            padding: 4.5;
+            color: #ff3d12;
+            box-shadow: 0px 5px 10px rgba(135, 135, 135, 0.5);
+        }
+        #add-note-icon {
+            font-size: xx-large;
+            position: absolute;
+            bottom: 50px;
+            right: 30px;
+
+        }
+        .note-title {
+            font-size: x-large;
+            padding-left: 2.5%;
+            width: 90%;
+            padding-top: 6.5%;
+        }
+        .note-del-icon {
+            padding-top: 6.5%;
+            font-size: xx-large;
+            color: gray;
+            float: right;
+        }
+        .note-date {
+            font-size: large;
+            padding-top: 2.5%;
+            float: left;
+            color: gray;
+        }
+        /*EDIT*/
+        #edit-screen {
+            display: none;
+            margin: 5%;
+            margin-top: 10%;
+            max-width: 100%;
+        }
+        #back-icon {
+            font-size: xx-large;
+            float: left;
+        }
+        input {
+            font-size:xx-large;
+            border: none;
+            outline: none;
+            float: left;
+            width: 80%;
+        }
+        hr {
+            width: 100%;
+            float : left; 
+            margin-top: 5%;
+            margin-bottom: 10%;
+            border: 1px solid gray
+        }
+        textarea {
+            font-size: x-large;
+            font-family: Arial;
+            width: 100%;
+            border : none;
+            outline: none;
+            resize: none;
+            height: 100%;
+            
+        }
+    </style>
+    <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+    <script>
+        //извлечение тэгов
+        let input = window.document.querySelector('input')
+        let textarea  = window.document.querySelector('textarea');
+        let mainsceen =  window.document.querySelector("#main-screen");
+        let editscreen =  window.document.querySelector('#edit-screen');
+        let notescount = window.document.querySelector('#notes-count');
+        //переменные
+        let notelist = [];
+        let noteid = -1;
+        //функции
+        const onLoad = () => {
+            noteList = window.localStorage.getItem('notelist')
+                ? JSON.parse(window.localStorage.getItem('notelist'))
+                : [];
+            notescount.innerText = `Заметок ${notelist.length}`;
+            if(notelist) {
+                noteList.map(elem => {
+                    createNewTableRow(elem.id, elem.title, elem.date);
+                });
+            }
+         }
+        //обратка
+        const upgradenote = ()  => {
+            //
+        }
+        const createnewnote = () => {
+            let date = moment(new Date());
+            let object = {
+                id: notelist.length,
+                title: input.value,
+                text: textarea.value,
+                date: date.format ('LL'),
+                
+            }
+            notelist.push  (object);
+        }
+        const backiconclick = () => {
+            mainsceen.style.display  ='block';
+            editscreen.style.display = 'none';
+            noteid = -1;
+            window.location.reload();
+        }
+        const savenote = () => {
+            if(textarea.value == '')
+                if(noteid < 0) createnewnote();
+                else upgradenote();
+                window.localStorage.setItem('notelist', JSON.stringify(notelist));
+        }
+        const addnoteiconclick  = () =>{
+            mainsceen.style.display  ='none';
+            editscreen.style.display = 'block';
+        }
+    </script>
+</body> 
